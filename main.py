@@ -1,9 +1,73 @@
 from bottle import Bottle, run, request, response, HTTPError
+import jwt
+import bcrypt
 
 app = Bottle()
 
 # In-memory storage for items
 items = {}
+users = {}
+
+SECRET_KEY = "your_secret_key_here"  # This should be kept secret and stored securely
+
+# User registration
+@app.route('/register', method='POST')
+def register():
+    data = request.json
+    username = data.get('username')
+    password = data.get('password')
+
+    # Check if user already exists
+    if username in users:
+        raise HTTPError(400, "User already exists")
+
+    # Hash the password
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+
+    users[username] = {
+        'username': username,
+        'password': hashed_password.decode('utf-8')
+    }
+
+    return {"message": "User registered successfully"}
+
+# User login
+@app.route('/login', method='POST')
+def login():
+    data = request.json
+    username = data.get('username')
+    password = data.get('password')
+
+    user = users.get(username)
+
+    if not user:
+        raise HTTPError(401, "Invalid credentials")
+
+    if bcrypt.checkpw(password.encode('utf-8'), user['password'].encode('utf-8')):
+        # Generate JWT token
+        token = jwt.encode({'username': username}, SECRET_KEY, algorithm='HS256')
+        return {"token": token}
+    else:
+        raise HTTPError(401, "Invalid credentials")
+
+# JWT Middleware
+@hook('before_request')
+def check_authentication():
+    # Exclude login and register routes from authentication check
+    if request.path in ['/login', '/register']:
+        return
+
+    token = request.headers.get('Authorization')
+    if not token:
+        raise HTTPError(401, "Token missing")
+
+    try:
+        decoded_token = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+        request.user = decoded_token.get('username')
+    except jwt.ExpiredSignatureError:
+        raise HTTPError(401, "Token has expired")
+    except jwt.InvalidTokenError:
+        raise HTTPError(401, "Invalid token")
 
 # 1. Create an item
 @app.route('/items', method='POST')

@@ -1,15 +1,12 @@
-Certainly! Here's a `README.md` file for the Bottle CRUD application:
+# Bottle CRUD Application with Authentication
 
----
-
-# Bottle CRUD Application
-
-This is a simple backend application built using the Bottle framework that provides CRUD (Create, Read, Update, Delete) functionality for managing a list of items.
+This is a simple backend application built using the Bottle framework that provides CRUD (Create, Read, Update, Delete) functionality for managing a list of items. Additionally, it features user registration, login, and JWT-based authentication.
 
 ## Table of Contents
 
 - [Installation](#installation)
 - [Usage](#usage)
+- [Authentication](#authentication)
 - [Endpoints](#endpoints)
 - [Testing](#testing)
 
@@ -23,7 +20,7 @@ This is a simple backend application built using the Bottle framework that provi
 
 2. **Install the required packages**:
    ```bash
-   pip install bottle
+   pip install bottle jwt bcrypt
    ```
 
 ## Usage
@@ -35,6 +32,22 @@ python app.py
 ```
 
 The server will start on `localhost` at port `8080`.
+
+## Authentication
+
+### User Registration
+
+- **URL**: `/register`
+- **Method**: `POST`
+- **Data**: `{"username": "your_username", "password": "your_password"}`
+
+### User Login
+
+- **URL**: `/login`
+- **Method**: `POST`
+- **Data**: `{"username": "your_username", "password": "your_password"}`
+
+After logging in, the returned JWT token must be included in the `Authorization` header of subsequent requests to access protected endpoints.
 
 ## Endpoints
 
@@ -98,6 +111,14 @@ You can use tools like `curl` or Postman to test the endpoints. For example, to 
 curl -X POST -H "Content-Type: application/json" -d '{"name": "Sample Item"}' http://localhost:8080/items
 ```
 
----
+To register a new user:
 
-This README provides a clear overview of the application, how to install it, how to use it, and details about the available endpoints. Adjust the `<repository_url>` and `<repository_directory>` placeholders with the appropriate values if you're hosting this on a platform like GitHub.
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{"username": "testuser", "password": "testpass"}' http://localhost:8080/register
+```
+
+To login and get a JWT token:
+
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{"username": "testuser", "password": "testpass"}' http://localhost:8080/login
+```
