@@ -12,13 +12,7 @@ This is a simple backend application built using the Bottle framework that provi
 
 ## Installation
 
-1. **Clone the repository**:
-   ```bash
-   git clone <repository_url>
-   cd <repository_directory>
-   ```
-
-2. **Install the required packages**:
+1. **Install the required packages**:
    ```bash
    pip install bottle jwt bcrypt
    ```
