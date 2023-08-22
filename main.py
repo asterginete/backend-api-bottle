@@ -10,6 +10,10 @@ users = {}
 
 SECRET_KEY = "your_secret_key_here"  # This should be kept secret and stored securely
 
+def validate_item_name(name):
+    if not name or not isinstance(name, str) or len(name) > 100:
+        raise HTTPError(400, "Invalid item name. Ensure it's a string and less than 100 characters.")
+
 # User registration
 @app.route('/register', method='POST')
 def register():
@@ -74,6 +78,7 @@ def check_authentication():
 def create_item():
     try:
         data = request.json
+        validate_item_name(data['name'])
         item_id = str(len(items) + 1)
         items[item_id] = data['name']
         return {"id": item_id, "name": data['name']}
@@ -100,6 +105,7 @@ def update_item(item_id):
         raise HTTPError(404, "Item not found")
     try:
         data = request.json
+        validate_item_name(data['name'])
         items[item_id] = data['name']
         return {"id": item_id, "name": data['name']}
     except:
