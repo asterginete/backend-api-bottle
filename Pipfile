@@ -1,0 +1,30 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+# Development packages go here, for example:
+pytest = "*"
+
+[packages]
+bottle = "*"
+Flask-JWT-Extended = "*"
+Flask-OAuthlib = "*"
+SQLAlchemy = "*"
+Flask-SQLAlchemy = "*"
+pymongo = "*"
+Flask-WhooshAlchemy = "*"
+Elasticsearch = "*"
+Flask-Uploads = "*"
+Flask-Limiter = "*"
+Flask-Caching = "*"
+marshmallow = "*"
+Flasgger = "*"
+Flask-Mail = "*"
+bcrypt = "*"
+
+[requires]
+python_version = "3.8"
+
+[scripts]
