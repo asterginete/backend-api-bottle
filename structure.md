@@ -25,19 +25,17 @@
 |   |-- /static
 |   |   |-- /images
 |   |
-|   |-- /templates
-|   |   |-- (HTML templates if needed for any web views)
 |   |
 |   |-- __init__.py
 |   |-- config.py (For configurations like DB connection, email settings, etc.)
 |   |-- utils.py (For utility functions like password hashing, token generation, etc.)
 |
-|-- /migrations (For database migrations if using a tool like Alembic)
 |
 |-- /tests
-|   |-- /unit
-|   |-- /integration
-|   |-- test_config.py
+|   |-- conftest.py
+|   |-- test_auth.py
+|   |-- test_items.py
+|   |-- test_categories.py
 |
 |-- README.md
 |-- requirements.txt

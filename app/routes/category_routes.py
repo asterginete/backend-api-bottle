@@ -1,44 +1,37 @@
 from bottle import Bottle, request, HTTPError, response
-from app.models.category import Category
+from app.models import Category
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 app = Bottle()
 
 # Assuming you're using SQLite for this example
-DATABASE_URL = "sqlite:///categories.db"
+DATABASE_URL = "sqlite:///app.db"
 engine = create_engine(DATABASE_URL)
 Session = sessionmaker(bind=engine)
 
-@app.route('/categories', method='POST')
-@jwt_required()
-def create_category():
+@app.route('/', method='GET')
+def get_all_categories():
     session = Session()
     try:
-        data = request.json
-        name = data['name']
-        description = data.get('description', None)
-
-        # Check if category already exists
-        existing_category = session.query(Category).filter_by(name=name).first()
-        if existing_category:
-            raise HTTPError(400, "Category already exists")
-
-        # Create new category
-        new_category = Category(name=name, description=description)
-        session.add(new_category)
-        session.commit()
-
-        return {"message": "Category created successfully!", "category_id": new_category.category_id}
+        categories = session.query(Category).all()
+        return {
+            "categories": [
+                {
+                    "category_id": category.category_id,
+                    "name": category.name,
+                    "description": category.description
+                } for category in categories
+            ]
+        }
     except Exception as e:
-        session.rollback()
         raise HTTPError(500, str(e))
     finally:
         session.close()
 
-@app.route('/categories/<category_id:int>', method='GET')
-def get_category(category_id):
+@app.route('/<category_id:int>', method='GET')
+def get_single_category(category_id):
     session = Session()
     try:
         category = session.query(Category).filter_by(category_id=category_id).first()
@@ -55,7 +48,27 @@ def get_category(category_id):
     finally:
         session.close()
 
-@app.route('/categories/<category_id:int>', method='PUT')
+@app.route('/', method='POST')
+@jwt_required()
+def create_category():
+    session = Session()
+    try:
+        data = request.json
+        new_category = Category(
+            name=data['name'],
+            description=data['description']
+        )
+        session.add(new_category)
+        session.commit()
+
+        return {"message": "Category created successfully!", "category_id": new_category.category_id}
+    except Exception as e:
+        session.rollback()
+        raise HTTPError(500, str(e))
+    finally:
+        session.close()
+
+@app.route('/<category_id:int>', method='PUT')
 @jwt_required()
 def update_category(category_id):
     session = Session()
@@ -77,7 +90,7 @@ def update_category(category_id):
     finally:
         session.close()
 
-@app.route('/categories/<category_id:int>', method='DELETE')
+@app.route('/<category_id:int>', method='DELETE')
 @jwt_required()
 def delete_category(category_id):
     session = Session()
@@ -95,5 +108,3 @@ def delete_category(category_id):
         raise HTTPError(500, str(e))
     finally:
         session.close()
-
-# Additional category routes like list all categories, etc. can be added here.
