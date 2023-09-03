@@ -1,118 +1,124 @@
-# Bottle CRUD Application with Authentication
+# CRUD Application with Bottle Framework
 
-This is a simple backend application built using the Bottle framework that provides CRUD (Create, Read, Update, Delete) functionality for managing a list of items. Additionally, it features user registration, login, and JWT-based authentication.
+This application provides a simple backend CRUD functionality using the Bottle framework. It covers user authentication, item management, category management, comments, and notifications.
 
 ## Table of Contents
 
 - [Installation](#installation)
 - [Usage](#usage)
-- [Authentication](#authentication)
-- [Endpoints](#endpoints)
+- [API Endpoints](#api-endpoints)
+- [Features](#features)
 - [Testing](#testing)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Installation
 
-1. **Install the required packages**:
-   ```bash
-   pip install bottle jwt bcrypt
-   ```
+1. **Clone the repository**:
+    ```bash
+    git clone https://github.com/asterginete/backend-api-bottle.git
+    cd backend-api-bottle
+    ```
+
+2. **Set up a virtual environment**:
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate
+    ```
+
+3. **Install dependencies**:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+4. **Set up the database**:
+    ```bash
+    python run.py initdb
+    ```
+
+5. **Run the application**:
+    ```bash
+    python run.py
+    ```
 
 ## Usage
 
-To start the server, run:
+Once the application is running, you can access it at `http://localhost:8080`.
 
-```bash
-python app.py
-```
+## API Endpoints
 
-The server will start on `localhost` at port `8080`.
+### Authentication
 
-## Authentication
+- **Register**: `POST /auth/register`
+- **Login**: `POST /auth/login`
+- **Request Password Reset**: `POST /auth/request-password-reset`
+- **Reset Password**: `POST /auth/reset-password/<token>`
+- **Get Profile**: `GET /auth/profile`
+- **Update Profile**: `PUT /auth/profile`
 
-### User Registration
+### Items
 
-- **URL**: `/register`
-- **Method**: `POST`
-- **Data**: `{"username": "your_username", "password": "your_password"}`
+- **List All Items**: `GET /items/`
+- **Get Single Item**: `GET /items/<item_id>`
+- **Create Item**: `POST /items/`
+- **Update Item**: `PUT /items/<item_id>`
+- **Delete Item**: `DELETE /items/<item_id>`
 
-### User Login
+### Categories
 
-- **URL**: `/login`
-- **Method**: `POST`
-- **Data**: `{"username": "your_username", "password": "your_password"}`
+- **List All Categories**: `GET /categories/`
+- **Get Single Category**: `GET /categories/<category_id>`
+- **Create Category**: `POST /categories/`
+- **Update Category**: `PUT /categories/<category_id>`
+- **Delete Category**: `DELETE /categories/<category_id>`
 
-After logging in, the returned JWT token must be included in the `Authorization` header of subsequent requests to access protected endpoints.
+### Comments
 
-## Endpoints
+- **List All Comments for an Item**: `GET /comments/item/<item_id>`
+- **Create Comment**: `POST /comments/`
+- **Update Comment**: `PUT /comments/<comment_id>`
+- **Delete Comment**: `DELETE /comments/<comment_id>`
 
-### 1. Create an item
+### Notifications
 
-- **URL**: `/items`
-- **Method**: `POST`
-- **Data**: `{"name": "item_name"}`
+- **List All Notifications**: `GET /notifications/`
+- **Mark Notification as Read**: `PUT /notifications/<notification_id>/read`
+- **Delete Notification**: `DELETE /notifications/<notification_id>`
 
-### 2. Get all items
+## Features
 
-- **URL**: `/items`
-- **Method**: `GET`
-
-### 3. Get a specific item by ID
-
-- **URL**: `/items/<item_id>`
-- **Method**: `GET`
-
-### 4. Update an item by ID
-
-- **URL**: `/items/<item_id>`
-- **Method**: `PUT`
-- **Data**: `{"name": "new_item_name"}`
-
-### 5. Delete an item by ID
-
-- **URL**: `/items/<item_id>`
-- **Method**: `DELETE`
-
-### 6. Get the count of items
-
-- **URL**: `/items/count`
-- **Method**: `GET`
-
-### 7. Check if an item exists by name
-
-- **URL**: `/items/exists/<name>`
-- **Method**: `GET`
-
-### 8. Clear all items
-
-- **URL**: `/items/clear`
-- **Method**: `DELETE`
-
-### 9. Get the first item
-
-- **URL**: `/items/first`
-- **Method**: `GET`
-
-### 10. Get the last item
-
-- **URL**: `/items/last`
-- **Method**: `GET`
+- User registration and authentication
+- Password reset functionality
+- CRUD operations for items
+- CRUD operations for categories
+- Commenting on items
+- Notifications for users
+- Image upload for items
+- Email notifications
+- Pagination support
+- Search functionality
+- Filtering and sorting of items
+- User profiles with avatars
+- Rate limiting for API requests
+- Detailed logging
 
 ## Testing
 
-You can use tools like `curl` or Postman to test the endpoints. For example, to create a new item:
+Tests are written using `pytest`. To run the tests:
 
 ```bash
-curl -X POST -H "Content-Type: application/json" -d '{"name": "Sample Item"}' http://localhost:8080/items
+pytest tests/
 ```
 
-To register a new user:
+## Contributing
 
-```bash
-curl -X POST -H "Content-Type: application/json" -d '{"username": "testuser", "password": "testpass"}' http://localhost:8080/register
-```
+1. Fork the repository.
+2. Create a new branch.
+3. Make your changes and write tests.
+4. Commit your changes.
+5. Push to your branch.
+6. Create a pull request.
 
-To login and get a JWT token:
+## License
 
-```bash
-curl -X POST -H "Content-Type: application/json" -d '{"username": "testuser", "password": "testpass"}' http://localhost:8080/login
-```
+This project is licensed under the MIT License.

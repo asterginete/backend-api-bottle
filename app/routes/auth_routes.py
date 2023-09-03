@@ -75,7 +75,7 @@ def request_password_reset():
             raise HTTPError(404, "User not found")
 
         token = s.dumps(email, salt='password-reset-salt')
-        reset_url = f'http://yourfrontendurl.com/reset-password/{token}'
+        reset_url = f'http://frontendurl.com/reset-password/{token}'
         send_email("Password Reset Request", [email], f"Click here to reset your password: {reset_url}")
 
         return {"message": "Password reset link sent to email!"}
